@@ -1,12 +1,20 @@
 import { store } from "../store/store";
 
-export const generateDiscount = (): { message: string; code?: string } => {
+export const generateDiscount = (): {
+  message: string;
+  code?: string;
+  success: boolean;
+} => {
   if (store.orderCount % store.nthOrderDiscount === 0) {
     const newCode = `DISCOUNT${store.orderCount}`;
     store.discountCodes.push(newCode);
-    return { message: "Discount code generated", code: newCode };
+    return {
+      message: "Discount code generated",
+      code: newCode,
+      success: true,
+    };
   }
-  return { message: "Discount not available yet" };
+  return { message: "Discount not available yet", success: false };
 };
 
 export const getReport = () => {

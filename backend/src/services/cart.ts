@@ -1,12 +1,14 @@
 import { store } from "../store/store";
-import { ICart, ICartItem } from "../types";
+import { ICart } from "../types";
 
 export const addItemToCart = (
   userId: string,
   productId: number,
   quantity: number,
   price: number
-): ICartItem[] => {
+): {
+  success: boolean;
+} => {
   if (!store.carts[userId]) {
     store.carts[userId] = {
       isCouponApplied: false,
@@ -17,7 +19,9 @@ export const addItemToCart = (
   }
   const product = store.products.find((p) => p.id === productId);
   if (!product) {
-    return [];
+    return {
+      success: false,
+    };
   }
   const newItem = { productId, quantity, price, name: product.name };
   const productAlreadyExist = store.carts[userId].items.find(
@@ -31,7 +35,9 @@ export const addItemToCart = (
       if (cartItem.productId === productId) cartItem.quantity += quantity;
     }
   }
-  return store.carts[userId].items;
+  return {
+    success: true,
+  };
 };
 
 export const getCart = (userId: string): ICart => {
@@ -48,9 +54,13 @@ export const removeItemFromCart = (
   userId: string,
   productId: number,
   quantity: number
-): ICartItem[] => {
+): {
+  success: boolean;
+} => {
   if (!store.carts[userId]) {
-    return [];
+    return {
+      success: false,
+    };
   }
   const cart = store.carts[userId];
   for (let i = 0; i < cart.items.length; i++) {
@@ -63,5 +73,7 @@ export const removeItemFromCart = (
       break;
     }
   }
-  return cart.items;
+  return {
+    success: true,
+  };
 };

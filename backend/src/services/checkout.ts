@@ -30,6 +30,9 @@ export const checkout = (
     total: finalTotal,
     discountApplied: cart.discount,
   };
+  store.discountCodes = store.discountCodes.filter(
+    (d) => d !== cart.discountCode
+  );
   store.orders.push(order);
   store.carts[userId] = {
     items: [],
@@ -91,7 +94,6 @@ export const remove = (userId: string, discountCode: string) => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  console.log(total);
   const finalTotal = total * (1 + discount);
   if (cart.isCouponApplied) {
     cart.isCouponApplied = false;

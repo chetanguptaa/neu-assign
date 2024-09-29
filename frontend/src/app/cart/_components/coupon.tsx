@@ -57,7 +57,7 @@ const Coupon = ({
       };
       removeCoupon();
     };
-  }, [toast]);
+  }, []);
   const applyCoupon = async () => {
     const res = await axios.post(
       "http://localhost:8000/checkout/apply-coupon",

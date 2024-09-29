@@ -23,13 +23,17 @@ const AddSubButtons = ({
         quantity: 1,
         price: item.price,
       });
-      if (response.data) {
+      if (response.data.success) {
         setQuantity((prevQuantity) => prevQuantity + 1);
         onUpdate();
+        toast({
+          title: "Added to cart successfully",
+        });
+      } else {
+        toast({
+          title: "Some error occoured",
+        });
       }
-      toast({
-        title: "Added to cart successfully",
-      });
     } catch (error) {
       console.log(error);
       toast({
@@ -47,13 +51,17 @@ const AddSubButtons = ({
           productId: item.productId,
           quantity: 1,
         });
-        if (response.data) {
+        if (response.data.success) {
           setQuantity((prevQuantity) => prevQuantity - 1);
           onUpdate();
+          toast({
+            title: "Removed from cart successfully",
+          });
+        } else {
+          toast({
+            title: "Some error occoured",
+          });
         }
-        toast({
-          title: "Removed from cart successfully",
-        });
       } catch (error) {
         console.error("Error subtracting product from cart:", error);
         toast({

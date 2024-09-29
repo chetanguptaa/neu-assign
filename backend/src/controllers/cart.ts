@@ -3,14 +3,22 @@ import { addItemToCart, getCart, removeItemFromCart } from "../services/cart";
 
 export const addItem = (req: Request, res: Response) => {
   const { userId, productId, quantity, price } = req.body;
-  const cart = addItemToCart(userId, productId, quantity, price);
-  res.status(200).json({ message: "Item added to cart", cart });
+  const { success } = addItemToCart(userId, productId, quantity, price);
+  if (success) {
+    res.status(200).json({ message: "Item added to cart", success });
+  } else {
+    res.status(400).json({ message: "Some error occured" });
+  }
 };
 
 export const removeItem = (req: Request, res: Response) => {
   const { userId, productId, quantity } = req.body;
-  const cart = removeItemFromCart(userId, productId, quantity);
-  res.status(200).json({ message: "Item removed from cart", cart });
+  const { success } = removeItemFromCart(userId, productId, quantity);
+  if (success) {
+    res.status(200).json({ message: "Item removed from cart", success });
+  } else {
+    res.status(400).json({ message: "Some error occured" });
+  }
 };
 
 export const getUserCart = (req: Request, res: Response) => {

@@ -85,7 +85,8 @@ const Coupon = ({
     const res = await axios.post("http://localhost:8000/checkout", {
       userId: 1,
     });
-    if (res.data) {
+    if (res.data.success) {
+      onUpdate();
       toast({
         title: "Order created successfully",
       });

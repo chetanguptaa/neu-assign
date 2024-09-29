@@ -3,19 +3,18 @@ import { IOrder } from "../types";
 
 export const checkout = (
   userId: string
-): { finalTotal?: number; message: string } => {
+): { finalTotal?: number; message: string; success: boolean } => {
   const cart = store.carts[userId] || [];
   if (!cart.items.length) {
-    return { finalTotal: 0, message: "Cart is empty" };
+    return { finalTotal: 0, message: "Cart is empty", success: false };
   }
-  console.log("ussers' cart is this ", cart);
-
   const doesCouponStillExists = store.discountCodes.find(
     (dc) => dc === cart.discountCode
   );
-  if (!doesCouponStillExists) {
+  if (cart.isCouponApplied && !doesCouponStillExists) {
     return {
       message: "Sorry, coupon was used by other user",
+      success: false,
     };
   }
   const total = cart.items.reduce(
@@ -38,7 +37,7 @@ export const checkout = (
     discount: 0,
     discountCode: "",
   };
-  return { finalTotal, message: "Checkout successful" };
+  return { finalTotal, message: "Checkout successful", success: true };
 };
 
 export const apply = (userId: string, discountCode: string) => {
@@ -49,24 +48,23 @@ export const apply = (userId: string, discountCode: string) => {
   if (!cart.items.length) {
     return { finalTotal: 0, success: false };
   }
-  console.log("out discount code ", discountCode);
   let discount = 0;
   for (let i = 0; i < store.discountCodes.length; i++) {
     if (store.discountCodes[i] === discountCode) {
       discount = 0.1;
     }
   }
+  if (discount === 0) {
+    return { finalTotal: 0, success: false };
+  }
   const total = cart.items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  console.log(total);
   if (cart.isCouponApplied) {
     return { finalTotal: total, success: false };
   }
   const finalTotal = total - total * discount;
-  console.log("final total before sending is this ", finalTotal);
-
   cart.isCouponApplied = true;
   cart.discount = total - finalTotal;
   cart.discountCode = discountCode;
